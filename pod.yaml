@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-mount-sample
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    args:
+    - sleep
+    - "1000000"
+    volumeMounts:
+    - name: test-gpg-volume
+      mountPath: /tmp
+      readOnly: true
+  volumes:
+  - name: test-gpg-volume
+    secret:
+      secretName: test-gpg
+      items:
+      - key: TEST_KEY
+        path: test.gpg

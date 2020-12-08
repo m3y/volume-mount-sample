@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volume-mount-sample-deployment
+  labels:
+    app: volume-mount-sample
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: volume-mount-sample
+  template:
+    metadata:
+      labels:
+        app: volume-mount-sample
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        args:
+        - sleep
+        - "1000000"
+        volumeMounts:
+        - name: test-gpg-volume
+          mountPath: /tmp
+          readOnly: true
+      volumes:
+      - name: test-gpg-volume
+        secret:
+          secretName: test-gpg
+          items:
+          - key: TEST_KEY
+            path: test.gpg

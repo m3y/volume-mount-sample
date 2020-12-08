@@ -1,0 +1,30 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: volume-mount-sample-cronjob
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busybox
+            image: busybox
+            imagePullPolicy: IfNotPresent
+            args:
+            - /bin/sh
+            - -c
+            - cat /tmp/test.gpg
+            volumeMounts:
+            - name: test-gpg-volume
+              mountPath: /tmp
+              readOnly: true
+          volumes:
+          - name: test-gpg-volume
+            secret:
+              secretName: test-gpg
+              items:
+              - key: TEST_KEY
+                path: test.gpg
+          restartPolicy: OnFailure
